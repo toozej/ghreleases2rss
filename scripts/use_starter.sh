@@ -133,7 +133,7 @@ if [[ $# -lt 1 ]]; then
     handle_error "Usage: $0 <new_project_name> [github_username]"
 fi
 
-OLD_PROJECT_NAME="golang-starter"
+OLD_PROJECT_NAME="ghreleases2rss"
 NEW_PROJECT_NAME="${1}"
 GITHUB_USERNAME="${2:-toozej}"
 

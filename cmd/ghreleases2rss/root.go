@@ -9,18 +9,18 @@ import (
 	"github.com/spf13/viper"
 	"go.uber.org/automaxprocs/maxprocs"
 
-	"github.com/toozej/golang-starter/internal/starter"
-	"github.com/toozej/golang-starter/pkg/man"
-	"github.com/toozej/golang-starter/pkg/version"
+	"github.com/toozej/ghreleases2rss/internal/ghreleases2rss"
+	"github.com/toozej/ghreleases2rss/pkg/man"
+	"github.com/toozej/ghreleases2rss/pkg/version"
 )
 
 var rootCmd = &cobra.Command{
-	Use:              "golang-starter",
-	Short:            "golang starter examples",
-	Long:             `Golang starter template using cobra and viper modules`,
+	Use:              "ghreleases2rss",
+	Short:            "Subscribe to GitHub projects' releases in RSS reader",
+	Long:             `Subscribe to GitHub repo release feeds in Miniflux`,
 	Args:             cobra.ExactArgs(0),
 	PersistentPreRun: rootCmdPreRun,
-	Run:              starter.Run,
+	Run:              ghreleases2rss.Run,
 }
 
 func rootCmdPreRun(cmd *cobra.Command, args []string) {
@@ -47,6 +47,10 @@ func init() {
 
 	// create rootCmd-level flags
 	rootCmd.PersistentFlags().BoolP("debug", "d", false, "Enable debug-level logging")
+	rootCmd.PersistentFlags().BoolP("clearCategoryFeeds", "r", false, "Delete all feeds within category before subscribing to new feeds")
+	rootCmd.Flags().StringP("file", "f", "", "Input file with GitHub repo URLs or names (required)")
+	rootCmd.Flags().StringP("category", "c", "", "RSS feed category name (optional)")
+	_ = rootCmd.MarkFlagRequired("file")
 
 	// add sub-commands
 	rootCmd.AddCommand(
