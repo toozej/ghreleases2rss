@@ -1,4 +1,4 @@
-# golang-starter
+# ghreleases2rss
 Golang starter template
 
 ## features of this starter template

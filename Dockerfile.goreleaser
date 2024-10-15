@@ -1,6 +1,6 @@
 # runtime image
 FROM scratch
 # Copy our static executable.
-COPY golang-starter /go/bin/golang-starter
+COPY ghreleases2rss /go/bin/ghreleases2rss
 # Run the binary.
-ENTRYPOINT ["/go/bin/golang-starter"]
+ENTRYPOINT ["/go/bin/ghreleases2rss"]

@@ -13,11 +13,11 @@ if [[ ! -f .env ]]; then
 fi
 
 # Source .env file's environment variables
-#export "$(xargs < .env)"
+export "$(grep -v '^#' .env | xargs)"
 
 # Read GitHub username and token from the environment
 GITHUB_USERNAME="${GITHUB_USERNAME:-}"
-GITHUB_TOKEN="${GITHUB_TOKEN:-}"
+GITHUB_TOKEN="${GH_TOKEN:-}"
 
 if [[ -z "$GITHUB_USERNAME" || -z "$GITHUB_TOKEN" ]]; then
     handle_error "GITHUB_USERNAME or GITHUB_TOKEN is not set in the environment. Please set them in .env."

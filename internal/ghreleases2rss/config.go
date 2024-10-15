@@ -1,4 +1,4 @@
-package starter
+package ghreleases2rss
 
 import (
 	"fmt"
@@ -7,10 +7,8 @@ import (
 	"github.com/spf13/viper"
 )
 
-var exit = os.Exit // Use a variable for os.Exit to allow overriding in tests
-
 // Get environment variables
-func getEnvVars() {
+func getEnvVars() error {
 	if _, err := os.Stat(".env"); err == nil {
 		// Initialize Viper from .env file
 		viper.SetConfigFile(".env") // Specify the name of your .env file
@@ -18,17 +16,19 @@ func getEnvVars() {
 		// Read the .env file
 		if err := viper.ReadInConfig(); err != nil {
 			fmt.Printf("Error reading .env file: %s\n", err)
-			exit(1)
+			return err
 		}
 	}
 
 	// Enable reading environment variables
 	viper.AutomaticEnv()
 
-	// get username from Viper
-	username = viper.GetString("USERNAME")
-	if username == "" {
-		fmt.Println("username must be provided")
-		exit(1)
+	// Load Miniflux API settings from environment using Viper
+	minifluxAPIKey := viper.GetString("MINIFLUX_API_KEY")
+	minifluxURL := viper.GetString("MINIFLUX_URL")
+	if minifluxAPIKey == "" || minifluxURL == "" {
+		return fmt.Errorf("miniflux API key or URL not set in environment variables")
 	}
+
+	return nil
 }

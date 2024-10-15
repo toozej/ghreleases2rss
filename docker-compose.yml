@@ -1,9 +1,9 @@
 ---
 version: "3"
 services:
-  golang-starter:
-    container_name: golang-starter
-    image: toozej/golang-starter:latest
+  ghreleases2rss:
+    container_name: ghreleases2rss
+    image: toozej/ghreleases2rss:latest
     restart: unless-stopped
     security_opt:
       - no-new-privileges:true
@@ -12,11 +12,11 @@ services:
       - "traefik.enable=false"
       # labels below for publishing as web service
       # - "traefik.docker.network=traefik"
-      # - "traefik.http.routers.golang-starter.rule=Host(`golang-starter.test`)"
-      # - "traefik.http.routers.golang-starter.middlewares=http-redirect-https@file,headers@file"
-      # - "traefik.http.routers.golang-starter-secure.entrypoints=https"
-      # - "traefik.http.routers.golang-starter-secure.rule=Host(`golang-starter.test`)"
-      # - "traefik.http.routers.golang-starter-secure.middlewares=headers@file"
-      # - "traefik.http.routers.golang-starter-secure.tls=true"
+      # - "traefik.http.routers.ghreleases2rss.rule=Host(`ghreleases2rss.test`)"
+      # - "traefik.http.routers.ghreleases2rss.middlewares=http-redirect-https@file,headers@file"
+      # - "traefik.http.routers.ghreleases2rss-secure.entrypoints=https"
+      # - "traefik.http.routers.ghreleases2rss-secure.rule=Host(`ghreleases2rss.test`)"
+      # - "traefik.http.routers.ghreleases2rss-secure.middlewares=headers@file"
+      # - "traefik.http.routers.ghreleases2rss-secure.tls=true"
     # networks:
       # - traefik
