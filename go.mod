@@ -4,7 +4,7 @@ go 1.23.0
 
 toolchain go1.24.1
 
-require github.com/spf13/viper v1.20.0
+require github.com/spf13/viper v1.20.1
 
 require (
 	github.com/muesli/mango-cobra v1.2.0
