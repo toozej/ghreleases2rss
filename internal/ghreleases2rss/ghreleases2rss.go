@@ -2,26 +2,23 @@ package ghreleases2rss
 
 import (
 	"bufio"
+	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"github.com/toozej/ghreleases2rss/internal/github"
 	"github.com/toozej/ghreleases2rss/internal/miniflux"
+	"github.com/toozej/ghreleases2rss/pkg/config"
 )
 
-func Run(cmd *cobra.Command, args []string) {
-	err := getEnvVars()
-	if err != nil {
-		log.Fatal("Error gathering required environment variables: ", err)
-	}
-
-	// Get Miniflux API URL endpoint and API Key from Viper
-	minifluxAPIKey := viper.GetString("MINIFLUX_API_KEY")
-	minifluxURL := viper.GetString("MINIFLUX_URL")
+func Run(cmd *cobra.Command, args []string, conf config.Config) {
+	// Get Miniflux API URL endpoint and API Key from config
+	minifluxAPIKey := conf.MinifluxAPIKey
+	minifluxURL := conf.MinifluxURL
 
 	// Get input file from flag
 	filePath, _ := cmd.Flags().GetString("file")
@@ -61,8 +58,8 @@ func Run(cmd *cobra.Command, args []string) {
 		}
 	}
 
-	// Open the input file
-	file, err := os.Open(filePath) // #nosec G304
+	// Open the input file securely (prevent directory traversal)
+	file, err := openFileSecurely(filePath)
 	if err != nil {
 		log.Fatalf("Error opening file: %v", err)
 	}
@@ -96,4 +93,39 @@ func Run(cmd *cobra.Command, args []string) {
 	if err := scanner.Err(); err != nil {
 		log.Error("Error reading file: ", err)
 	}
+}
+
+// openFileSecurely opens a file with path traversal protection
+func openFileSecurely(filePath string) (*os.File, error) {
+	// Get current working directory for secure file operations
+	cwd, err := os.Getwd()
+	if err != nil {
+		return nil, fmt.Errorf("error getting current working directory: %w", err)
+	}
+
+	// Resolve absolute path for the file
+	absFilePath, err := filepath.Abs(filePath)
+	if err != nil {
+		return nil, fmt.Errorf("error resolving file path: %w", err)
+	}
+
+	// Get absolute path for current directory
+	absCwd, err := filepath.Abs(cwd)
+	if err != nil {
+		return nil, fmt.Errorf("error resolving current directory: %w", err)
+	}
+
+	// Check if the file is within allowed directories (current directory or subdirectories)
+	relPath, err := filepath.Rel(absCwd, absFilePath)
+	if err != nil || strings.HasPrefix(relPath, "..") {
+		return nil, fmt.Errorf("file path traversal detected or file outside allowed directory")
+	}
+
+	// Open the file - gosec G304 is acceptable here as we have directory traversal protection above
+	file, err := os.Open(absFilePath) // #nosec G304
+	if err != nil {
+		return nil, fmt.Errorf("error opening file: %w", err)
+	}
+
+	return file, nil
 }

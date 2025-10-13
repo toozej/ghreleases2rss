@@ -13,7 +13,8 @@ function handle_error {
 fetch_credentials() {
     echo "Fetching credentials from 1Password..."
 
-    GH_GHCR_TOKEN=$(op item get "github.com" --field ghcr_token --reveal) || handle_error "Failed to fetch GitHub GHCR token."
+    GH_GHCR_TOKEN=$(op item get "github.com" --field ghcr_token --reveal) || handle_error "Failed to fetch GHCR GitHub token."
+    TAP_GITHUB_TOKEN=$(op item get "github.com" --field tap_token --reveal) || handle_error "Failed to fetch Homebrew Tap GitHub token."
     DOCKERHUB_USERNAME=$(op item get "docker.com" --field username) || handle_error "Failed to fetch DockerHub username."
     DOCKERHUB_TOKEN=$(op item get "docker.com" --field token --reveal) || handle_error "Failed to fetch DockerHub token."
     QUAY_USERNAME=$(op item get "Quay.io" --field username) || handle_error "Failed to fetch Quay username."
@@ -24,6 +25,7 @@ fetch_credentials() {
     cat <<EOF >> .env
 GITHUB_USERNAME=${GITHUB_USERNAME}
 GH_GHCR_TOKEN=${GH_GHCR_TOKEN}
+TAP_GITHUB_TOKEN=${TAP_GITHUB_TOKEN}
 DOCKERHUB_USERNAME=${DOCKERHUB_USERNAME}
 DOCKERHUB_TOKEN=${DOCKERHUB_TOKEN}
 QUAY_USERNAME=${QUAY_USERNAME}
@@ -91,6 +93,7 @@ generate_cosign_keys() {
 
     # Export passphrase for cosign to use
     export COSIGN_PASSWORD=${COSIGN_PASSPHRASE}
+    export COSIGN_PASSPHRASE=${COSIGN_PASSPHRASE}
 
     # Generate key-pair
     cosign generate-key-pair || handle_error "Cosign key generation failed."
@@ -183,9 +186,15 @@ fetch_credentials
 generate_cosign_keys
 
 # Store generated secrets in 1Password
-store_in_1password
+./scripts/upload_secrets_to_1password.sh secrets "${NEW_PROJECT_NAME}"
+
+# Store EnvFile in 1Password
+./scripts/upload_secrets_to_1password.sh envfile "${NEW_PROJECT_NAME}"
 
 # Call the external secrets upload script
 ./scripts/upload_secrets_to_github.sh "${NEW_PROJECT_NAME}"
+
+# Setup necessary GitHub repo labels
+gh label create dependencies --description "Dependencies" --repo "${GITHUB_USERNAME}/${NEW_PROJECT_NAME}"
 
 echo "Project initialization complete! You can now verify and commit the changes."
