@@ -231,7 +231,7 @@ homebrew_casks:
       name: homebrew-tap
       token: "{{ .Env.TAP_GITHUB_TOKEN }}"
     manpages:
-      - "man/ghreleases2rss.1.gz"
+      - "manpages/ghreleases2rss.1.gz"
     completions:
       bash: "completions/ghreleases2rss.bash"
       zsh: "completions/ghreleases2rss.zsh"
