@@ -31,4 +31,5 @@ FROM scratch
 # Copy our static executable.
 COPY --from=build /go/ghreleases2rss/ghreleases2rss /go/bin/ghreleases2rss
 # Run the binary.
+USER non-root
 ENTRYPOINT ["/go/bin/ghreleases2rss"]
