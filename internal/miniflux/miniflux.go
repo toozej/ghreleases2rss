@@ -36,7 +36,7 @@ func GetCategoryID(apiEndpoint, apiKey, category string) (int, error) {
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := client.Do(req) // #nosec G704 -- apiEndpoint is from config, not user input
 	if err != nil {
 		return 0, err
 	}
@@ -82,7 +82,7 @@ func SubscribeToFeed(apiEndpoint string, apiKey string, categoryId int, rssFeed 
 	req.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := client.Do(req) // #nosec G704 -- apiEndpoint and rssFeed are from config, not user input
 	if err != nil {
 		return err
 	}
@@ -111,7 +111,7 @@ func GetCategoryFeeds(apiEndpoint string, apiKey string, categoryId int) ([]int,
 
 	// Make the request using an HTTP client
 	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := client.Do(req) // #nosec G704 -- apiEndpoint is from config, not user input
 	if err != nil {
 		return nil, err
 	}
@@ -159,7 +159,7 @@ func DeleteFeed(apiEndpoint string, apiKey string, feedId int) error {
 
 	// Make the request using an HTTP client
 	client := &http.Client{}
-	resp, err := client.Do(req)
+	resp, err := client.Do(req) // #nosec G704 -- apiEndpoint is from config, not user input
 	if err != nil {
 		return err
 	}
