@@ -122,11 +122,11 @@ local-run: ## Run locally built binary
 
 local-release-test: ## Build assets and test goreleaser config using locally installed golang toolchain and goreleaser
 	goreleaser check
-	goreleaser build --rm-dist --snapshot
+	goreleaser build --clean --snapshot
 
 local-release: local-test docker-login ## Release assets using locally installed golang toolchain and goreleaser
 	if test -e $(CURDIR)/ghreleases2rss.key && test -e $(CURDIR)/.env; then \
-		export `cat $(CURDIR)/.env | xargs` && goreleaser release --rm-dist; \
+		export `cat $(CURDIR)/.env | xargs` && goreleaser release --clean; \
 	else \
 		echo "no cosign private key found at $(CURDIR)/ghreleases2rss.key. Cannot release."; \
 	fi
