@@ -1,5 +1,5 @@
 # setup project and deps
-FROM golang:1.26-bookworm AS init
+FROM golang:1.26-trixie AS init
 
 WORKDIR /go/ghreleases2rss/
 
