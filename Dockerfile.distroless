@@ -26,5 +26,6 @@ FROM gcr.io/distroless/static-debian13:nonroot
 COPY --from=build /go/ghreleases2rss/ghreleases2rss /go/bin/ghreleases2rss
 # Expose port for publishing as web service
 # EXPOSE 8080
+USER nonroot
 # Run the binary.
 ENTRYPOINT ["/go/bin/ghreleases2rss"]

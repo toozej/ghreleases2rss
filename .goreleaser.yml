@@ -96,7 +96,8 @@ dockers_v2:
       "io.artifacthub.package.readme-url": "https://raw.githubusercontent.com/toozej/ghreleases2rss/main/README.md"
       "io.artifacthub.package.maintainers": "[{\"name\":\"toozej\"}]"
       "io.artifacthub.package.license": "GPLv3"
-      "org.opencontainers.image.description": "Find liquor stores and their inventory"
+      "org.opencontainers.image.description": "Subscribe to GitHub projects’ releases in RSS\
+        \ reader"
       "org.opencontainers.image.created": "{{.Date}}"
       "org.opencontainers.image.name": "{{.ProjectName}}"
       "org.opencontainers.image.revision": "{{.FullCommit}}"
@@ -137,7 +138,8 @@ dockers_v2:
       "io.artifacthub.package.readme-url": "https://raw.githubusercontent.com/toozej/ghreleases2rss/main/README.md"
       "io.artifacthub.package.maintainers": "[{\"name\":\"toozej\"}]"
       "io.artifacthub.package.license": "GPLv3"
-      "org.opencontainers.image.description": "Find liquor stores and their inventory"
+      "org.opencontainers.image.description": "Subscribe to GitHub projects’ releases in RSS\
+        \ reader"
       "org.opencontainers.image.created": "{{.Date}}"
       "org.opencontainers.image.name": "{{.ProjectName}}"
       "org.opencontainers.image.revision": "{{.FullCommit}}"
@@ -185,7 +187,7 @@ nfpms:
     id: packages
     homepage: https://github.com/toozej/ghreleases2rss
     description: |-
-      Golang starter template
+      Subscribe to GitHub projects’ releases in RSS reader
     maintainer: toozej
     license: GPLv3
     vendor: ghreleases2rss
@@ -228,7 +230,7 @@ nfpms:
 homebrew_casks:
   - name: ghreleases2rss
     homepage: https://github.com/toozej/ghreleases2rss
-    description: "Find liquor stores and their inventory"
+    description: "Subscribe to GitHub projects’ releases in RSS reader"
     license: GPLv3
     repository:
       owner: toozej
@@ -254,14 +256,13 @@ sboms:
 
 signs:
   - cmd: cosign
-    stdin: '{{ .Env.COSIGN_PASSWORD }}'
     output: true
+    signature: "${artifact}.sigstore.json"
     args:
       - 'sign-blob'
-      - '--key=env://COSIGN_PRIVATE_KEY'
-      - '--yes'
-      - '--output-signature=${signature}'
+      - '--bundle=${signature}'
       - '${artifact}'
+      - '--yes'
     artifacts: all
 
 docker_signs:
