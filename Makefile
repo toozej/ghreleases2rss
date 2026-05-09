@@ -202,7 +202,7 @@ pre-commit-install: ## Install pre-commit hooks and necessary binaries
 	# syft
 	command -v syft || curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
 	# cosign
-	go install github.com/sigstore/cosign/cmd/cosign@latest
+	command -v cosign || brew install cosign || go install github.com/sigstore/cosign/v3/cmd/cosign@latest
 	# go-licenses
 	go install github.com/google/go-licenses@latest
 	# go vuln check
@@ -236,8 +236,8 @@ docs: ## Serve Go documentation
 diagrams: ## Generate architectural diagrams using go-diagrams
 	@echo "Generating architectural diagrams..."
 	go run cmd/diagrams/main.go
-	cd ./docs/diagrams/go-diagrams && for i in $(find . -name '*.dot'); do \
-		dot -Tpng $i > ${i%.dot}.png; \
+	cd ./docs/diagrams/go-diagrams && for i in $$(find . -name '*.dot'); do \
+		dot -Tpng $$i > $${i%.dot}.png; \
 	done
 	@echo "Diagram PNGs generated in ./docs/diagrams/go-diagrams/"
 
@@ -248,10 +248,10 @@ mutation-test: ## Run mutation testing using go-gremlins
 
 test-changed: ## Run tests only for packages with changes since last commit
 	@echo "Running tests for changed packages..."
-	@CHANGED_PACKAGES=$(git diff --name-only HEAD~1 | grep '\.go$' | xargs -I {} dirname {} | sort -u | xargs -I {} go list ./{}... 2>/dev/null | grep -v 'no Go files'); \
-	if [ -n "$CHANGED_PACKAGES" ]; then \
-		echo "Testing packages: $CHANGED_PACKAGES"; \
-		go test -race -v $CHANGED_PACKAGES; \
+	@CHANGED_PACKAGES=$$(git diff --name-only HEAD~1 | grep '\.go$$' | xargs -I {} dirname {} | sort -u | xargs -I {} go list ./{}... 2>/dev/null | grep -v 'no Go files'); \
+	if [ -n "$$CHANGED_PACKAGES" ]; then \
+		echo "Testing packages: $$CHANGED_PACKAGES"; \
+		go test -race -v $$CHANGED_PACKAGES; \
 	else \
 		echo "No changed Go packages found"; \
 	fi
@@ -259,10 +259,10 @@ test-changed: ## Run tests only for packages with changes since last commit
 watch-test: ## Watch for file changes and run tests for changed packages
 	@echo "Watching for changes and running tests..."
 	@while true; do \
-		CHANGED_PACKAGES=$(git diff --name-only HEAD | grep '\.go$' | xargs -I {} dirname {} | sort -u | xargs -I {} go list ./{}... 2>/dev/null | grep -v 'no Go files'); \
-		if [ -n "$CHANGED_PACKAGES" ]; then \
-			echo "Changed packages detected: $CHANGED_PACKAGES"; \
-			go test -race -v $CHANGED_PACKAGES; \
+		CHANGED_PACKAGES=$$(git diff --name-only HEAD | grep '\.go$$' | xargs -I {} dirname {} | sort -u | xargs -I {} go list ./{}... 2>/dev/null | grep -v 'no Go files'); \
+		if [ -n "$$CHANGED_PACKAGES" ]; then \
+			echo "Changed packages detected: $$CHANGED_PACKAGES"; \
+			go test -race -v $$CHANGED_PACKAGES; \
 		fi; \
 		sleep 2; \
 	done
